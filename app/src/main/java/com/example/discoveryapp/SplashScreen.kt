@@ -22,6 +22,7 @@ class SplashScreen : AppCompatActivity() {
             // Close the splash activity so the user won't go back to it using the back button
             finish()
         }, SPLASH_DURATION)
+        //test
 
     }
 }
