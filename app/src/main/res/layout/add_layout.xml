@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#045078">
+
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+    android:orientation="vertical">
+
+
+    <EditText
+        android:id="@+id/txtID"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="ID"
+        android:text=""
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textColor="#B98E63"
+        android:textColorHint="#B98E63"
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+    <EditText
+        android:id="@+id/txtAmount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:text=""
+        android:hint="Amount"
+        android:inputType="number"
+        android:textAlignment="center"
+        android:textColor="#B98E63"
+        android:textColorHint="#B98E63"
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+    <EditText
+        android:id="@+id/txtPracID"
+        android:text=""
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:hint="Practice ID"
+        android:inputType="text"
+        android:textAlignment="center"
+        android:textColor="#B98E63"
+        android:textColorHint="#B98E63"
+        android:textSize="18sp"
+        android:focusable="true"
+        android:focusableInTouchMode="true"/>
+
+
+    <Button
+        android:id="@+id/btnAddSub"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Add" />
+</LinearLayout>
+
+</RelativeLayout>
