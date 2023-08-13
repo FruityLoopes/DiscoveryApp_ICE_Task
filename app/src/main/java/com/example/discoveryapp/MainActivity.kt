@@ -8,13 +8,16 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import android.view.Gravity
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.PopupMenu
 import android.widget.PopupWindow
+import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.gson.Gson
@@ -33,23 +36,25 @@ class MainActivity : AppCompatActivity() {
     lateinit var id: EditText
     lateinit var amount: EditText
     lateinit var pracID: EditText
+    private val CodeDelay: Long = 2000
     override fun onCreate(savedInstanceState: Bundle?) {
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val bar: ProgressBar= findViewById(R.id.progressBar)
+
+        bar.visibility = View.VISIBLE
         InfoGetter()
         userAdapter = UserAdapter()
-        val feed: RecyclerView = findViewById(R.id.feed)
-        val gen: Button = findViewById(R.id.btnGen)
+
+
+        Handler().postDelayed({ Feed()} , CodeDelay )
+
+
+
         val add: Button = findViewById(R.id.btnAdd)
 
-        gen.setOnClickListener(){
-            feed.apply {  layoutManager = LinearLayoutManager(this@MainActivity)
-                adapter = userAdapter
-            }
-            Handler(Looper.getMainLooper()).post {
-                userAdapter.submitList(userList)
-            }
-        }
+
         add.setOnClickListener(){
             val popup = PopupWindow(this)
             popup.setFocusable(true);
@@ -82,6 +87,20 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun Feed(){
+        val feed: RecyclerView = findViewById(R.id.feed)
+        val bar: ProgressBar= findViewById(R.id.progressBar)
+
+        feed.apply {  layoutManager = LinearLayoutManager(this@MainActivity)
+            adapter = userAdapter
+        }
+        Handler(Looper.getMainLooper()).post {
+            userAdapter.submitList(userList)
+        }
+        bar.visibility = View.INVISIBLE
+    }
+
     private fun InfoGetter() {
         val executor =  Executors.newSingleThreadExecutor()
 
@@ -114,7 +133,7 @@ class MainActivity : AppCompatActivity() {
         call!!.enqueue(object : Callback<UserInput?> {
             override fun onResponse(call: Call<UserInput?>?, response: Response<UserInput?>) {
                 // this method is called when we get response from our api.
-                Toast.makeText(this@MainActivity, "Data added to API", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this@MainActivity, "User Data as been added", Toast.LENGTH_SHORT).show()
 
 
 
