@@ -20,14 +20,14 @@ import android.widget.Toast
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.github.kittinunf.fuel.httpPost
 import com.google.gson.Gson
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.github.kittinunf.fuel.core.extensions.jsonBody
+
+
 import java.net.URL
 import java.util.concurrent.Executors
+
 
 class MainActivity : AppCompatActivity() {
     lateinit var userAdapter: UserAdapter
@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
     lateinit var id: EditText
     lateinit var amount: EditText
     lateinit var pracID: EditText
-    private val CodeDelay: Long = 2000
+    private val CodeDelay: Long = 7000
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -44,6 +44,8 @@ class MainActivity : AppCompatActivity() {
         val bar: ProgressBar= findViewById(R.id.progressBar)
 
         bar.visibility = View.VISIBLE
+
+
         InfoGetter()
         userAdapter = UserAdapter()
 
@@ -78,8 +80,12 @@ class MainActivity : AppCompatActivity() {
                     return@setOnClickListener
                 }
                 // calling a method to post the data and passing our name and job.
-                postData(id.text.toString().toInt(), amount.text.toString().toInt(), pracID.text.toString());
-
+                Post()
+                Toast.makeText(
+                    this@MainActivity,
+                    "Data has been added to API",
+                    Toast.LENGTH_SHORT
+                ).show();
                 popup.dismiss()
 
             }
@@ -112,45 +118,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun postData(id: Int , amount: Int , pracID:String){
-        val retrofit = Retrofit.Builder()
-            .baseUrl("https://opsc.azurewebsites.net/Add.php/")
-            // as we are sending data in json format so
-            // we have to add Gson converter factory
-            .addConverterFactory(GsonConverterFactory.create())
-            // at last we are building our retrofit builder.
-            .build()
-        // below line is to create an instance for our retrofit api class.
-        val retrofitAPI = retrofit.create(RetrofitAPI::class.java)
+    private fun Post(){
+        val executor =  Executors.newSingleThreadExecutor()
 
-        // passing data from our text fields to our modal class.
-        val userInput: UserInput = UserInput(id, amount, pracID)
+        executor.execute {
+            val user = UserInput(id.text.toString().toInt() , amount.text.toString().toInt() , pracID.text.toString())
+            val (_, _, result) =  "https://opsc.azurewebsites.net/Add.php".httpPost()
+                .jsonBody(Gson().toJson(user).toString())
+                .responseString()
 
-        // calling a method to create a post and passing our modal class.
-        val call: Call<UserInput?>? = retrofitAPI.postData(userInput)
-
-        // on below line we are executing our method.
-        call!!.enqueue(object : Callback<UserInput?> {
-            override fun onResponse(call: Call<UserInput?>?, response: Response<UserInput?>) {
-                // this method is called when we get response from our api.
-                Toast.makeText(this@MainActivity, "User Data as been added", Toast.LENGTH_SHORT).show()
-
-
-
-
-
-                // we are getting response from our body
-                // and passing it to our modal class.
-                val response: UserInput? = response.body()
-
-              Log.d("Test" , response.toString())
+            Handler(Looper.getMainLooper()).post{
+                Log.d("Test" , result.toString())
             }
-
-            override fun onFailure(call: Call<UserInput?>?, t: Throwable) {
-                // setting text to our text view when
-                // we get error response from API.
-                Log.d("Error found is : " , t.message.toString())
-            }
-        })
+        }
     }
+
+    //return message to a object. okay
+
 }
