@@ -37,6 +37,9 @@ class MainActivity : AppCompatActivity() {
     lateinit var amount: EditText
     lateinit var pracID: EditText
     private val CodeDelay: Long = 7000
+    private val Delay: Long = 5000
+    lateinit var message:List<Message>
+
     override fun onCreate(savedInstanceState: Bundle?) {
 
         super.onCreate(savedInstanceState)
@@ -81,12 +84,14 @@ class MainActivity : AppCompatActivity() {
                 }
                 // calling a method to post the data and passing our name and job.
                 Post()
-                Toast.makeText(
+
+                Handler().postDelayed({Toast.makeText(
                     this@MainActivity,
-                    "Data has been added to API",
+                    message[0].message,
                     Toast.LENGTH_SHORT
                 ).show();
-                popup.dismiss()
+                    popup.dismiss()} , Delay )
+
 
             }
             popup.showAtLocation( view, Gravity.CENTER , 0 , 0)
@@ -126,13 +131,15 @@ class MainActivity : AppCompatActivity() {
             val (_, _, result) =  "https://opsc.azurewebsites.net/Add.php".httpPost()
                 .jsonBody(Gson().toJson(user).toString())
                 .responseString()
-
+            val Json = "[" + result.component1() + "]"
+            message = Gson().fromJson(Json, Array<Message>::class.java).toList()
             Handler(Looper.getMainLooper()).post{
+
                 Log.d("Test" , result.toString())
             }
         }
     }
 
-    //return message to a object. okay
+    //return message to a object.
 
 }
